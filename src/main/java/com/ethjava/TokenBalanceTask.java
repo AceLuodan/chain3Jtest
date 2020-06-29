@@ -1,8 +1,8 @@
 package com.ethjava;
 
 import com.ethjava.utils.Environment;
-import org.web3j.protocol.Web3j;
-import org.web3j.protocol.http.HttpService;
+import org.web3moac.protocol.Web3moac;
+import org.web3moac.protocol.http.HttpService;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -29,7 +29,7 @@ public class TokenBalanceTask {
 		}
 	}
 
-	private static Web3j web3j;
+	private static Web3moac web3moac;
 
 	//要查询的token合约地址
 	private static List<Token> tokenList;
@@ -38,7 +38,7 @@ public class TokenBalanceTask {
 	private static List<String> addressList;
 
 	public static void main(String[] args) {
-		web3j = Web3j.build(new HttpService(Environment.RPC_URL));
+		web3moac = Web3moac.build(new HttpService(Environment.RPC_URL));
 		loadData();
 		//如果没有decimals则需要请求
 		requestDecimals();
@@ -56,20 +56,20 @@ public class TokenBalanceTask {
 
 	private static void requestDecimals() {
 		for (Token token : tokenList) {
-			token.decimals = TokenClient.getTokenDecimals(web3j, token.contractAddress);
+			token.decimals = TokenClient.getTokenDecimals(web3moac, token.contractAddress);
 		}
 	}
 
 	private static void requestName() {
 		for (Token token : tokenList) {
-			token.name = TokenClient.getTokenName(web3j, token.contractAddress);
+			token.name = TokenClient.getTokenName(web3moac, token.contractAddress);
 		}
 	}
 
 	private static void processTask() {
 		for (String address : addressList) {
 			for (Token token : tokenList) {
-				BigDecimal balance = new BigDecimal(TokenClient.getTokenBalance(web3j, address, token.contractAddress));
+				BigDecimal balance = new BigDecimal(TokenClient.getTokenBalance(web3moac, address, token.contractAddress));
 				balance.divide(BigDecimal.TEN.pow(token.decimals));
 				System.out.println("address " + address + " name " + token.name + " balance " + balance);
 			}

@@ -3,23 +3,23 @@ package com.ethjava;
 import com.ethjava.utils.Environment;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.web3j.abi.FunctionEncoder;
-import org.web3j.abi.TypeReference;
-import org.web3j.abi.datatypes.Address;
-import org.web3j.abi.datatypes.Bool;
-import org.web3j.abi.datatypes.Function;
-import org.web3j.abi.datatypes.Type;
-import org.web3j.abi.datatypes.generated.Uint256;
-import org.web3j.crypto.*;
-import org.web3j.protocol.ObjectMapperFactory;
-import org.web3j.protocol.Web3j;
-import org.web3j.protocol.core.DefaultBlockParameterName;
-import org.web3j.protocol.core.methods.response.EthGetTransactionCount;
-import org.web3j.protocol.core.methods.response.EthSendTransaction;
-import org.web3j.protocol.http.HttpService;
-import org.web3j.tx.ChainId;
-import org.web3j.utils.Convert;
-import org.web3j.utils.Numeric;
+import org.web3moac.abi.FunctionEncoder;
+import org.web3moac.abi.TypeReference;
+import org.web3moac.abi.datatypes.Address;
+import org.web3moac.abi.datatypes.Bool;
+import org.web3moac.abi.datatypes.Function;
+import org.web3moac.abi.datatypes.Type;
+import org.web3moac.abi.datatypes.generated.Uint256;
+import org.web3moac.crypto.*;
+import org.web3moac.protocol.ObjectMapperFactory;
+import org.web3moac.protocol.Web3moac;
+import org.web3moac.protocol.core.DefaultBlockParameterName;
+import org.web3moac.protocol.core.methods.response.EthGetTransactionCount;
+import org.web3moac.protocol.core.methods.response.EthSendTransaction;
+import org.web3moac.protocol.http.HttpService;
+import org.web3moac.tx.ChainId;
+import org.web3moac.utils.Convert;
+import org.web3moac.utils.Numeric;
 
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -36,7 +36,7 @@ import java.util.List;
  */
 public class ColdWallet {
 
-	private static Web3j web3j;
+	private static Web3moac web3moac;
 
 	private static String d = "/Users/yangzhengwei/Documents/eth/coldwallet";
 
@@ -47,7 +47,7 @@ public class ColdWallet {
 	private static String privateKey = "f4529331f460fa88cc14eb981baf90201e7fc709386bf2f5b9ec687639f70086";
 
 	public static void main(String[] args) {
-		web3j = Web3j.build(new HttpService(Environment.RPC_URL));
+		web3moac = Web3moac.build(new HttpService(Environment.RPC_URL));
 		try {
 //			createWallet("11111111");
 //			decryptWallet(keystore, "11111111");
@@ -62,7 +62,7 @@ public class ColdWallet {
 		BigInteger nonce;
 		EthGetTransactionCount ethGetTransactionCount = null;
 		try {
-			ethGetTransactionCount = web3j.ethGetTransactionCount(address, DefaultBlockParameterName.PENDING).send();
+			ethGetTransactionCount = web3moac.ethGetTransactionCount(address, DefaultBlockParameterName.PENDING).send();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -79,7 +79,7 @@ public class ColdWallet {
 		try {
 			signedData = signTransaction(nonce, gasPrice, gasLimit, to, value, data, chainId, privateKey);
 			if (signedData != null) {
-				EthSendTransaction ethSendTransaction = web3j.ethSendRawTransaction(signedData).send();
+				EthSendTransaction ethSendTransaction = web3moac.ethSendRawTransaction(signedData).send();
 				System.out.println(ethSendTransaction.getTransactionHash());
 			}
 		} catch (IOException e) {
@@ -87,11 +87,11 @@ public class ColdWallet {
 		}
 	}
 
-	private static void testTokenTransaction(Web3j web3j, String fromAddress, String privateKey, String contractAddress, String toAddress, double amount, int decimals) {
+	private static void testTokenTransaction(Web3moac web3moac, String fromAddress, String privateKey, String contractAddress, String toAddress, double amount, int decimals) {
 		BigInteger nonce;
 		EthGetTransactionCount ethGetTransactionCount = null;
 		try {
-			ethGetTransactionCount = web3j.ethGetTransactionCount(fromAddress, DefaultBlockParameterName.PENDING).send();
+			ethGetTransactionCount = web3moac.ethGetTransactionCount(fromAddress, DefaultBlockParameterName.PENDING).send();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -120,7 +120,7 @@ public class ColdWallet {
 		try {
 			signedData = ColdWallet.signTransaction(nonce, gasPrice, gasLimit, contractAddress, value, data, chainId, privateKey);
 			if (signedData != null) {
-				EthSendTransaction ethSendTransaction = web3j.ethSendRawTransaction(signedData).send();
+				EthSendTransaction ethSendTransaction = web3moac.ethSendRawTransaction(signedData).send();
 				System.out.println(ethSendTransaction.getTransactionHash());
 			}
 		} catch (IOException e) {

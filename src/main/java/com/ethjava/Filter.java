@@ -3,10 +3,10 @@ package com.ethjava;
 import com.ethjava.utils.Environment;
 import io.reactivex.Flowable;
 import io.reactivex.disposables.Disposable;
-import org.web3j.protocol.Web3j;
-import org.web3j.protocol.core.DefaultBlockParameter;
-import org.web3j.protocol.core.methods.response.EthBlock;
-import org.web3j.protocol.http.HttpService;
+import org.web3moac.protocol.Web3moac;
+import org.web3moac.protocol.core.DefaultBlockParameter;
+import org.web3moac.protocol.core.methods.response.EthBlock;
+import org.web3moac.protocol.http.HttpService;
 import rx.Subscription;
 
 import java.math.BigInteger;
@@ -17,26 +17,26 @@ import java.math.BigInteger;
  * 所有监听都在Web3jRx中
  */
 public class Filter {
-	private static Web3j web3j;
+	private static Web3moac web3moac;
 
 	public static void main(String[] args) {
-		web3j = Web3j.build(new HttpService(Environment.RPC_URL));
+		web3moac = Web3moac.build(new HttpService(Environment.RPC_URL));
 		/**
 		 * 新区块监听
 		 */
-		newBlockFilter(web3j);
+		newBlockFilter(web3moac);
 		/**
 		 * 新交易监听
 		 */
-		newTransactionFilter(web3j);
+		newTransactionFilter(web3moac);
 		/**
 		 * 遍历旧区块、交易
 		 */
-		replayFilter(web3j);
+		replayFilter(web3moac);
 		/**
 		 * 从某一区块开始直到最新区块、交易
 		 */
-		catchUpFilter(web3j);
+		catchUpFilter(web3moac);
 
 		/**
 		 * 取消监听
@@ -44,8 +44,8 @@ public class Filter {
 		//subscription.unsubscribe();
 	}
 
-	private static void newBlockFilter(Web3j web3j) {
-		Disposable subscription = web3j.
+	private static void newBlockFilter(Web3moac web3moac) {
+		Disposable subscription = web3moac.
 				blockFlowable(false).
 				subscribe(block -> {
 					System.out.println("new block come in");
@@ -53,21 +53,21 @@ public class Filter {
 				});
 	}
 
-	private static void newTransactionFilter(Web3j web3j) {
-		Disposable subscription = web3j.transactionFlowable().
+	private static void newTransactionFilter(Web3moac web3moac) {
+		Disposable subscription = web3moac.transactionFlowable().
 				subscribe(transaction -> {
 					System.out.println("transaction come in");
 					System.out.println("transaction txHash " + transaction.getHash());
 				});
 	}
 
-	private static void replayFilter(Web3j web3j) {
+	private static void replayFilter(Web3moac web3moac) {
 		BigInteger startBlock = BigInteger.valueOf(2000000);
 		BigInteger endBlock = BigInteger.valueOf(2010000);
 		/**
 		 * 遍历旧区块
 		 */
-		Disposable subscription = web3j.
+		Disposable subscription = web3moac.
 				replayPastBlocksFlowable(
 						DefaultBlockParameter.valueOf(startBlock),
 						DefaultBlockParameter.valueOf(endBlock),
@@ -80,7 +80,7 @@ public class Filter {
 		/**
 		 * 遍历旧交易
 		 */
-		Disposable subscription1 = web3j.replayPastTransactionsFlowable(
+		Disposable subscription1 = web3moac.replayPastTransactionsFlowable(
 						DefaultBlockParameter.valueOf(startBlock),
 						DefaultBlockParameter.valueOf(endBlock)).
 				subscribe(transaction -> {
@@ -89,13 +89,13 @@ public class Filter {
 				});
 	}
 
-	private static void catchUpFilter(Web3j web3j) {
+	private static void catchUpFilter(Web3moac web3moac) {
 		BigInteger startBlock = BigInteger.valueOf(2000000);
 
 		/**
 		 * 遍历旧区块，监听新区块
 		 */
-		Disposable subscription = web3j.replayPastAndFutureBlocksFlowable(
+		Disposable subscription = web3moac.replayPastAndFutureBlocksFlowable(
 				DefaultBlockParameter.valueOf(startBlock), false)
 				.subscribe(block -> {
 					System.out.println("block");
@@ -105,7 +105,7 @@ public class Filter {
 		/**
 		 * 遍历旧交易，监听新交易
 		 */
-		Disposable subscription2 = web3j.replayPastTransactionsFlowable(
+		Disposable subscription2 = web3moac.replayPastTransactionsFlowable(
 				DefaultBlockParameter.valueOf(startBlock))
 				.subscribe(tx -> {
 					System.out.println("transaction");

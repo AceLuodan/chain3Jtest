@@ -4,10 +4,10 @@ import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.web3j.protocol.Web3jService;
-import org.web3j.protocol.http.HttpService;
-import org.web3j.protocol.ipc.UnixIpcService;
-import org.web3j.protocol.ipc.WindowsIpcService;
+import org.web3moac.protocol.Web3jService;
+import org.web3moac.protocol.http.HttpService;
+import org.web3moac.protocol.ipc.UnixIpcService;
+import org.web3moac.protocol.ipc.WindowsIpcService;
 
 import javax.net.ssl.*;
 import java.security.cert.CertificateException;

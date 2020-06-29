@@ -1,27 +1,27 @@
 package com.ethjava;
 
 import com.ethjava.utils.Environment;
-import org.web3j.abi.FunctionEncoder;
-import org.web3j.abi.FunctionReturnDecoder;
-import org.web3j.abi.TypeReference;
-import org.web3j.abi.datatypes.*;
-import org.web3j.abi.datatypes.generated.Uint256;
-import org.web3j.abi.datatypes.generated.Uint8;
-import org.web3j.crypto.Hash;
-import org.web3j.protocol.Web3j;
-import org.web3j.protocol.admin.Admin;
-import org.web3j.protocol.admin.methods.response.PersonalUnlockAccount;
-import org.web3j.protocol.core.DefaultBlockParameterName;
-import org.web3j.protocol.core.methods.request.Transaction;
-import org.web3j.protocol.core.methods.response.EthCall;
-import org.web3j.protocol.core.methods.response.EthGetTransactionCount;
-import org.web3j.protocol.core.methods.response.EthSendTransaction;
-import org.web3j.protocol.http.HttpService;
-import org.web3j.rlp.RlpEncoder;
-import org.web3j.rlp.RlpList;
-import org.web3j.rlp.RlpString;
-import org.web3j.utils.Convert;
-import org.web3j.utils.Numeric;
+import org.web3moac.abi.FunctionEncoder;
+import org.web3moac.abi.FunctionReturnDecoder;
+import org.web3moac.abi.TypeReference;
+import org.web3moac.abi.datatypes.*;
+import org.web3moac.abi.datatypes.generated.Uint256;
+import org.web3moac.abi.datatypes.generated.Uint8;
+import org.web3moac.crypto.Hash;
+import org.web3moac.protocol.Web3moac;
+import org.web3moac.protocol.admin.Admin;
+import org.web3moac.protocol.admin.methods.response.PersonalUnlockAccount;
+import org.web3moac.protocol.core.DefaultBlockParameterName;
+import org.web3moac.protocol.core.methods.request.Transaction;
+import org.web3moac.protocol.core.methods.response.EthCall;
+import org.web3moac.protocol.core.methods.response.EthGetTransactionCount;
+import org.web3moac.protocol.core.methods.response.EthSendTransaction;
+import org.web3moac.protocol.http.HttpService;
+import org.web3moac.rlp.RlpEncoder;
+import org.web3moac.rlp.RlpList;
+import org.web3moac.rlp.RlpString;
+import org.web3moac.utils.Convert;
+import org.web3moac.utils.Numeric;
 
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -36,7 +36,7 @@ import java.util.concurrent.ExecutionException;
  */
 public class TokenClient {
 
-	private static Web3j web3j;
+	private static Web3moac web3moac;
 
 	private static Admin admin;
 
@@ -47,13 +47,13 @@ public class TokenClient {
 	private static String emptyAddress = "0x0000000000000000000000000000000000000000";
 
 	public static void main(String[] args) {
-		web3j = Web3j.build(new HttpService(Environment.RPC_URL));
+		web3moac = Web3moac.build(new HttpService(Environment.RPC_URL));
 		admin = Admin.build(new HttpService(Environment.RPC_URL));
-		getTokenBalance(web3j, fromAddress, contractAddress);
-		System.out.println(getTokenName(web3j, contractAddress));
-		System.out.println(getTokenDecimals(web3j, contractAddress));
-		System.out.println(getTokenSymbol(web3j, contractAddress));
-		System.out.println(getTokenTotalSupply(web3j, contractAddress));
+		getTokenBalance(web3moac, fromAddress, contractAddress);
+		System.out.println(getTokenName(web3moac, contractAddress));
+		System.out.println(getTokenDecimals(web3moac, contractAddress));
+		System.out.println(getTokenSymbol(web3moac, contractAddress));
+		System.out.println(getTokenTotalSupply(web3moac, contractAddress));
 		System.out.println(sendTokenTransaction(
 				fromAddress, "yzw",
 				"0x6c0f49aF552F2326DD851b68832730CB7b6C0DaF", contractAddress,
@@ -63,7 +63,7 @@ public class TokenClient {
 	/**
 	 * 查询代币余额
 	 */
-	public static BigInteger getTokenBalance(Web3j web3j, String fromAddress, String contractAddress) {
+	public static BigInteger getTokenBalance(Web3moac web3moac, String fromAddress, String contractAddress) {
 
 		String methodName = "balanceOf";
 		List<Type> inputParameters = new ArrayList<>();
@@ -81,7 +81,7 @@ public class TokenClient {
 		EthCall ethCall;
 		BigInteger balanceValue = BigInteger.ZERO;
 		try {
-			ethCall = web3j.ethCall(transaction, DefaultBlockParameterName.LATEST).send();
+			ethCall = web3moac.ethCall(transaction, DefaultBlockParameterName.LATEST).send();
 			List<Type> results = FunctionReturnDecoder.decode(ethCall.getValue(), function.getOutputParameters());
 			balanceValue = (BigInteger) results.get(0).getValue();
 		} catch (IOException e) {
@@ -93,11 +93,11 @@ public class TokenClient {
 	/**
 	 * 查询代币名称
 	 *
-	 * @param web3j
+	 * @param web3moac
 	 * @param contractAddress
 	 * @return
 	 */
-	public static String getTokenName(Web3j web3j, String contractAddress) {
+	public static String getTokenName(Web3moac web3moac, String contractAddress) {
 		String methodName = "name";
 		String name = null;
 		String fromAddr = emptyAddress;
@@ -115,7 +115,7 @@ public class TokenClient {
 
 		EthCall ethCall;
 		try {
-			ethCall = web3j.ethCall(transaction, DefaultBlockParameterName.LATEST).sendAsync().get();
+			ethCall = web3moac.ethCall(transaction, DefaultBlockParameterName.LATEST).sendAsync().get();
 			List<Type> results = FunctionReturnDecoder.decode(ethCall.getValue(), function.getOutputParameters());
 			name = results.get(0).getValue().toString();
 		} catch (InterruptedException | ExecutionException e) {
@@ -127,11 +127,11 @@ public class TokenClient {
 	/**
 	 * 查询代币符号
 	 *
-	 * @param web3j
+	 * @param web3moac
 	 * @param contractAddress
 	 * @return
 	 */
-	public static String getTokenSymbol(Web3j web3j, String contractAddress) {
+	public static String getTokenSymbol(Web3moac web3moac, String contractAddress) {
 		String methodName = "symbol";
 		String symbol = null;
 		String fromAddr = emptyAddress;
@@ -149,7 +149,7 @@ public class TokenClient {
 
 		EthCall ethCall;
 		try {
-			ethCall = web3j.ethCall(transaction, DefaultBlockParameterName.LATEST).sendAsync().get();
+			ethCall = web3moac.ethCall(transaction, DefaultBlockParameterName.LATEST).sendAsync().get();
 			List<Type> results = FunctionReturnDecoder.decode(ethCall.getValue(), function.getOutputParameters());
 			symbol = results.get(0).getValue().toString();
 		} catch (InterruptedException | ExecutionException e) {
@@ -161,11 +161,11 @@ public class TokenClient {
 	/**
 	 * 查询代币精度
 	 *
-	 * @param web3j
+	 * @param web3moac
 	 * @param contractAddress
 	 * @return
 	 */
-	public static int getTokenDecimals(Web3j web3j, String contractAddress) {
+	public static int getTokenDecimals(Web3moac web3moac, String contractAddress) {
 		String methodName = "decimals";
 		String fromAddr = emptyAddress;
 		int decimal = 0;
@@ -183,7 +183,7 @@ public class TokenClient {
 
 		EthCall ethCall;
 		try {
-			ethCall = web3j.ethCall(transaction, DefaultBlockParameterName.LATEST).sendAsync().get();
+			ethCall = web3moac.ethCall(transaction, DefaultBlockParameterName.LATEST).sendAsync().get();
 			List<Type> results = FunctionReturnDecoder.decode(ethCall.getValue(), function.getOutputParameters());
 			decimal = Integer.parseInt(results.get(0).getValue().toString());
 		} catch (InterruptedException | ExecutionException e) {
@@ -195,11 +195,11 @@ public class TokenClient {
 	/**
 	 * 查询代币发行总量
 	 *
-	 * @param web3j
+	 * @param web3moac
 	 * @param contractAddress
 	 * @return
 	 */
-	public static BigInteger getTokenTotalSupply(Web3j web3j, String contractAddress) {
+	public static BigInteger getTokenTotalSupply(Web3moac web3moac, String contractAddress) {
 		String methodName = "totalSupply";
 		String fromAddr = emptyAddress;
 		BigInteger totalSupply = BigInteger.ZERO;
@@ -217,7 +217,7 @@ public class TokenClient {
 
 		EthCall ethCall;
 		try {
-			ethCall = web3j.ethCall(transaction, DefaultBlockParameterName.LATEST).sendAsync().get();
+			ethCall = web3moac.ethCall(transaction, DefaultBlockParameterName.LATEST).sendAsync().get();
 			List<Type> results = FunctionReturnDecoder.decode(ethCall.getValue(), function.getOutputParameters());
 			totalSupply = (BigInteger) results.get(0).getValue();
 		} catch (InterruptedException | ExecutionException e) {
@@ -254,7 +254,7 @@ public class TokenClient {
 
 				String data = FunctionEncoder.encode(function);
 
-				EthGetTransactionCount ethGetTransactionCount = web3j
+				EthGetTransactionCount ethGetTransactionCount = web3moac
 						.ethGetTransactionCount(fromAddress, DefaultBlockParameterName.PENDING).sendAsync().get();
 				BigInteger nonce = ethGetTransactionCount.getTransactionCount();
 				BigInteger gasPrice = Convert.toWei(BigDecimal.valueOf(5), Convert.Unit.GWEI).toBigInteger();
@@ -262,7 +262,7 @@ public class TokenClient {
 				Transaction transaction = Transaction.createFunctionCallTransaction(fromAddress, nonce, gasPrice,
 						BigInteger.valueOf(60000), contractAddress, data);
 
-				EthSendTransaction ethSendTransaction = web3j.ethSendTransaction(transaction).sendAsync().get();
+				EthSendTransaction ethSendTransaction = web3moac.ethSendTransaction(transaction).sendAsync().get();
 				txHash = ethSendTransaction.getTransactionHash();
 			}
 		} catch (Exception e) {

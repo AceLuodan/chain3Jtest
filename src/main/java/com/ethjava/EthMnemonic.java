@@ -4,12 +4,12 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.bitcoinj.crypto.*;
 import org.bitcoinj.wallet.DeterministicSeed;
-import org.web3j.crypto.CipherException;
-import org.web3j.crypto.ECKeyPair;
-import org.web3j.crypto.Wallet;
-import org.web3j.crypto.WalletFile;
-import org.web3j.protocol.ObjectMapperFactory;
-import org.web3j.utils.Numeric;
+import org.web3moac.crypto.CipherException;
+import org.web3moac.crypto.ECKeyPair;
+import org.web3moac.crypto.Wallet;
+import org.web3moac.crypto.WalletFile;
+import org.web3moac.protocol.ObjectMapperFactory;
+import org.web3moac.utils.Numeric;
 
 import java.io.IOException;
 import java.security.SecureRandom;

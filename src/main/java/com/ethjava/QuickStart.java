@@ -1,9 +1,9 @@
 package com.ethjava;
 
 import com.ethjava.utils.Environment;
-import org.web3j.protocol.Web3j;
-import org.web3j.protocol.core.methods.response.Web3ClientVersion;
-import org.web3j.protocol.http.HttpService;
+import org.web3moac.protocol.Web3moac;
+import org.web3moac.protocol.core.methods.response.Web3ClientVersion;
+import org.web3moac.protocol.http.HttpService;
 
 import java.io.IOException;
 
@@ -13,18 +13,18 @@ import java.io.IOException;
  */
 public class QuickStart {
 
-	private static Web3j web3j;
+	private static Web3moac web3moac;
 
 
 
 
 
     public static void main(String[] args) {
-		web3j = Web3j.build(new HttpService(Environment.RPC_URL));
+		web3moac = Web3moac.build(new HttpService(Environment.RPC_URL));
 
 		Web3ClientVersion web3ClientVersion = null;
 		try {
-			web3ClientVersion = web3j.web3ClientVersion().send();
+			web3ClientVersion = web3moac.web3ClientVersion().send();
 			String clientVersion = web3ClientVersion.getWeb3ClientVersion();
 			System.out.println("clientVersion " + clientVersion);
 		} catch (IOException e) {
